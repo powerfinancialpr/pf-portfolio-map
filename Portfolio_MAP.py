@@ -11,13 +11,15 @@ from tkinter import filedialog
 
 root = tk.Tk()
 root.withdraw()
-PORTFOLIO_PATH = filedialog.askopenfilename(title = 'Select a File')
+PORTFOLIO_PATH = filedialog.askopenfilename(title = 'Select Installation File')
 if PORTFOLIO_PATH:
     print(f"User selected: {PORTFOLIO_PATH}")
 else:
     print("No file was selected")
+if not PORTFOLIO_PATH:
+    raise SystemExit("No installation file selected — exiting.")
 portfolio = pd.read_csv(PORTFOLIO_PATH, encoding='utf-8-sig')
- 
+
 portfolio['latitude'] = pd.to_numeric(portfolio['latitude'], errors='coerce')
 portfolio['longitude'] = pd.to_numeric(portfolio['longitude'], errors='coerce')
 portfolio['installation_date'] = pd.to_datetime(portfolio['installation_date'], errors='coerce')
@@ -27,7 +29,14 @@ portfolio_geo = portfolio.dropna(subset=['latitude', 'longitude']).copy()
 # ==========================================
 #         Municipality Border Mode
 # ==========================================
-municipalities = gpd.read_file('/Users/briansalazar/Documents/Power_Financial/tl_2025_us_county/tl_2025_us_county.shp')
+MUNICIPALITIES_PATH = filedialog.askopenfilename(title = 'Select Puerto Rico Municipality File', filetypes = [('Shapefile', '*shp')])
+if MUNICIPALITIES_PATH:
+    print(f"User selected: {MUNICIPALITIES_PATH}")
+else:
+    print("No file was selected")
+if not MUNICIPALITIES_PATH:
+    raise SystemExit("No municipality shapefile selected - exiting")
+municipalities = gpd.read_file(MUNICIPALITIES_PATH)
 municipalities = municipalities[municipalities['STATEFP'] == '72']
 municipalities = municipalities.to_crs(epsg=4326)
  
