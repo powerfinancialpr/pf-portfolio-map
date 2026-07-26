@@ -1,6 +1,6 @@
 folium
 geopandas
-panda
+pandas
 jinja2
 branca
  
